@@ -731,15 +731,25 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
   );
 
   useEffect(() => {
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
     const kick = () => {
       if (!document.hidden) {
-        api.reconnectNow();
+        if (reconnectTimer !== null) {
+          clearTimeout(reconnectTimer);
+        }
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          api.reconnectNow();
+        }, 250);
       }
     };
     document.addEventListener("visibilitychange", kick);
     window.addEventListener("pageshow", kick);
     window.addEventListener("online", kick);
     return () => {
+      if (reconnectTimer !== null) {
+        clearTimeout(reconnectTimer);
+      }
       document.removeEventListener("visibilitychange", kick);
       window.removeEventListener("pageshow", kick);
       window.removeEventListener("online", kick);
