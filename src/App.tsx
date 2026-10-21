@@ -1047,6 +1047,36 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
         ) : (
           mainContent
         )}
+        {host === null && (
+          <nav className={styles.bottomNav} aria-label="Navigation">
+            {(
+              [
+                ["overview", t("Overview"), "dashboard", route.page === "overview"],
+                ...(hasGroups ? [["groups", t("Groups"), "folder", route.page === "groups"]] : []),
+                ...(started
+                  ? [["connections", t("Connections"), "swap_vert", route.page === "connections"]]
+                  : []),
+                ["logs", t("Logs"), "text_snippet", route.page === "logs"],
+                ["tools", t("Tools"), "terminal", route.page.startsWith("tools")],
+                ["settings", t("Settings"), "settings", route.page.startsWith("settings")],
+              ] as [string, string, IconName, boolean][]
+            ).map(([page, title, icon, active]) => (
+              <button
+                type="button"
+                key={page}
+                className={cx(styles.bottomNavItem, active && styles.active)}
+                aria-current={active ? "page" : undefined}
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate(page);
+                }}
+              >
+                <Icon name={icon} size={20} />
+                <span>{title}</span>
+              </button>
+            ))}
+          </nav>
+        )}
         {serviceStatus.phase !== "active" && (
           <div className={styles.reconnectPill} role="status">
             <Spinner />
