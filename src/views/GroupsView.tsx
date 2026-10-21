@@ -5,6 +5,7 @@ import { useStream } from "../api/stream";
 import { useApi } from "../app/context";
 import { showError } from "../app/errorStore";
 import { usePendingValue } from "../app/hooks";
+import { useProxyThreeColumns } from "../app/proxyGrid";
 import { useI18n } from "../app/i18n";
 import { Icon } from "../components/Icon";
 import { PageHeader } from "../components/PageHeader";
@@ -41,6 +42,7 @@ function GroupCard(props: { group: Group }) {
   const { t } = useI18n();
   const group = props.group;
   const [testing, setTesting] = useState(false);
+  const threeColumns = useProxyThreeColumns();
   const [expanded, setExpandOverride] = usePendingValue(group.isExpand);
   const [selected, setPendingSelection] = usePendingValue(group.selected);
 
@@ -96,7 +98,7 @@ function GroupCard(props: { group: Group }) {
         }
       >
         {expanded ? (
-          <div className={styles.groupItems}>
+          <div className={cx(styles.groupItems, threeColumns && styles.threeColumns)}>
             {group.items.map((item) => (
               <GroupItemCard
                 key={item.tag}

@@ -20,6 +20,7 @@ import {
 } from "../app/deprecatedWarnings";
 import { showError } from "../app/errorStore";
 import { ServiceStatus_Type } from "../gen/daemon/started_service_pb";
+import { setProxyThreeColumns, useProxyThreeColumns } from "../app/proxyGrid";
 import { LanguageSelect, useI18n } from "../app/i18n";
 import { Icon } from "../components/Icon";
 import { PageHeader } from "../components/PageHeader";
@@ -137,6 +138,7 @@ function AppSettingsContent({
   onAccentChange: (accent: AccentPreference) => void;
 }) {
   const { t } = useI18n();
+  const proxyThreeColumns = useProxyThreeColumns();
   const [settings, setSettings] = useState<DesktopSettingsState | null>(null);
   const [cacheSize, setCacheSize] = useState<number | null>(null);
   const [clearing, setClearing] = useState(false);
@@ -194,6 +196,17 @@ function AppSettingsContent({
               <div className="settings-row">
                 <span className="settings-row-label">{t("Language")}</span>
                 <LanguageSelect />
+              </div>
+              <div className="settings-row">
+                <span className="settings-row-label">{t("Proxies 3 Grids")}</span>
+                <button
+                  type="button"
+                  className={proxyThreeColumns ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={proxyThreeColumns}
+                  aria-label={t("Proxies 3 Grids")}
+                  onClick={() => setProxyThreeColumns(!proxyThreeColumns)}
+                />
               </div>
               <div className="settings-row">
                 <span className="settings-row-label">{t("Appearance")}</span>
@@ -688,6 +701,7 @@ export function PreferencesView(props: {
   onAccentChange: (accent: AccentPreference) => void;
 }) {
   const { t } = useI18n();
+  const proxyThreeColumns = useProxyThreeColumns();
   return (
     <div className="page">
       <SettingsPageHeader title={t("Preferences")} />
@@ -702,6 +716,18 @@ export function PreferencesView(props: {
             <Icon name="palette" size={15} />
             <span className="settings-row-label">{t("Theme")}</span>
             <ThemeMenu accent={props.accent} onChange={props.onAccentChange} />
+          </div>
+          <div className="settings-row">
+            <Icon name="dashboard" size={15} />
+            <span className="settings-row-label">{t("Proxies 3 Grids")}</span>
+            <button
+              type="button"
+              className={proxyThreeColumns ? "switch on" : "switch"}
+              role="switch"
+              aria-checked={proxyThreeColumns}
+              aria-label={t("Proxies 3 Grids")}
+              onClick={() => setProxyThreeColumns(!proxyThreeColumns)}
+            />
           </div>
           <div className="settings-row">
             <Icon name="language" size={15} />

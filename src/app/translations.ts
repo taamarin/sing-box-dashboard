@@ -96,6 +96,7 @@ export const TRANSLATIONS = {
   "Yellow": { "zh-Hans": "黄色", "zh-Hant": "黃色", "fa": "زرد", "ru": "Жёлтый" },
   "Green": { "zh-Hans": "绿色", "zh-Hant": "綠色", "fa": "سبز", "ru": "Зелёный" },
   "Graphite": { "zh-Hans": "石墨色", "zh-Hant": "石墨色", "fa": "گرافیت", "ru": "Графит" },
+  "Proxies 3 Grids": { "zh-Hans": "代理三列显示", "zh-Hant": "代理三列顯示", "fa": "نمایش پروکسی در ۳ ستون", "ru": "Прокси в 3 столбца" },
   "Language": { "zh-Hans": "语言", "zh-Hant": "語言", "fa": "زبان", "ru": "Язык" },
   "Edit Server": { "zh-Hans": "编辑服务器", "zh-Hant": "編輯伺服器", "fa": "ویرایش سرور", "ru": "Изменить сервер" },
   "New Server": { "zh-Hans": "新建服务器", "zh-Hant": "新建伺服器", "fa": "سرور جدید", "ru": "Новый сервер" },
