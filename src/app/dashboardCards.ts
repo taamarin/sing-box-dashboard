@@ -7,6 +7,7 @@ export type DashboardCardId =
   | "downloadTraffic"
   | "status"
   | "connections"
+  | "ipInfo"
   | "systemProxy"
   | "clashMode"
   | "profile";
@@ -27,6 +28,7 @@ export const DASHBOARD_CARDS: Record<
   downloadTraffic: { title: "Download", icon: "download", pairGroup: "traffic" },
   status: { title: "Status", icon: "bug_report", pairGroup: "statistics" },
   connections: { title: "Connections", icon: "cable", pairGroup: "statistics" },
+  ipInfo: { title: "IP Address", icon: "language", permanent: true },
   systemProxy: { title: "System HTTP Proxy", icon: "router", desktop: true },
   clashMode: { title: "Clash Mode", icon: "route" },
   profile: { title: "Profile", icon: "folder", desktop: true, permanent: true },
@@ -37,6 +39,7 @@ const DEFAULT_CARD_ORDER: DashboardCardId[] = [
   "downloadTraffic",
   "status",
   "connections",
+  "ipInfo",
   "systemProxy",
   "clashMode",
   "profile",

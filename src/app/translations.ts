@@ -116,6 +116,7 @@ export const TRANSLATIONS = {
   "Service not started": { "zh-Hans": "服务未启动", "zh-Hant": "服務未啟動", "fa": "سرویس شروع نشده است", "ru": "Служба не запущена" },
   "Upload": { "zh-Hans": "上传", "zh-Hant": "上傳", "fa": "آپلود", "ru": "Отправка" },
   "Download": { "zh-Hans": "下载", "zh-Hant": "下載", "fa": "دانلود", "ru": "Загрузка" },
+  "IP Address": { "zh-Hans": "IP 地址", "zh-Hant": "IP 位址", "fa": "نشانی IP", "ru": "IP-адрес" },
   "Status": { "zh-Hans": "状态", "zh-Hant": "狀態", "fa": "وضعیت", "ru": "Состояние" },
   "Uptime": { "zh-Hans": "运行时间", "zh-Hant": "運行時間", "fa": "مدت اجرا", "ru": "Время работы" },
   "Memory": { "zh-Hans": "内存", "zh-Hant": "內存", "fa": "حافظه", "ru": "Память" },
