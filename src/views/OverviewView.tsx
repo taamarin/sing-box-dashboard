@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { formatBytes, formatMemoryBytes } from "../api/format";
 import { useStream } from "../api/stream";
@@ -28,6 +28,15 @@ import { ServiceStatus_Type } from "../gen/daemon/started_service_pb";
 import { ProfileCard, SystemProxyCard } from "./ProfileViews";
 import styles from "./OverviewView.module.css";
 import { cx } from "../lib/cx";
+
+function countryFlag(countryCode: string): string {
+  if (!/^[A-Z]{2}$/i.test(countryCode)) {
+    return "";
+  }
+  return String.fromCodePoint(
+    ...countryCode.toUpperCase().split("").map((letter) => 127397 + letter.charCodeAt(0)),
+  );
+}
 
 export function OverviewView() {
   const api = useApi();
@@ -105,6 +114,51 @@ function OverviewCards(props: { config: DashboardCardsConfig; host: DesktopHost 
   const status = useStream(api.status);
   const clashMode = useStream(api.clashMode);
   const [currentMode, setPendingMode] = usePendingValue(clashMode.data.currentMode);
+  const [ipInfo, setIpInfo] = useState<{ ip: string; country: string; flag: string } | null>(null);
+  const [ipInfoUnavailable, setIpInfoUnavailable] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    const timeout = setTimeout(() => {
+      controller.abort();
+      if (active) {
+        setIpInfoUnavailable(true);
+      }
+    }, 8000);
+    void fetch("https://ipwho.is/", { signal: controller.signal, cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("IP lookup failed");
+        }
+        const data: unknown = await response.json();
+        if (data === null || typeof data !== "object") {
+          throw new Error("Invalid IP lookup response");
+        }
+        const result = data as Record<string, unknown>;
+        if (result.success !== true || typeof result.ip !== "string" || result.ip.trim() === "") {
+          throw new Error("Invalid IP lookup response");
+        }
+        const countryCode = typeof result.country_code === "string" ? result.country_code : "";
+        return {
+          ip: result.ip,
+          country: typeof result.country === "string" ? result.country : countryCode,
+          flag: countryFlag(countryCode),
+        };
+      })
+      .then(setIpInfo)
+      .catch(() => {
+        if (active) {
+          setIpInfoUnavailable(true);
+        }
+      })
+      .finally(() => clearTimeout(timeout));
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, []);
 
   const current = status.data.current;
   const trafficAvailable = current?.trafficAvailable ?? false;
@@ -160,6 +214,22 @@ function OverviewCards(props: { config: DashboardCardsConfig; host: DesktopHost 
           <Card key={card} icon="cable" title={t("Connections")} wide={wide}>
             <DataLine label={t("Inbound")} value={current ? current.connectionsIn : "..."} />
             <DataLine label={t("Outbound")} value={current ? current.connectionsOut : "..."} />
+          </Card>
+        );
+      case "ipInfo":
+        return (
+          <Card key={card} icon="language" title={t("IP Address")} wide={wide}>
+            <div className={styles.metric}>
+              {ipInfo?.ip ?? (ipInfoUnavailable ? t("Unavailable") : "...")}
+            </div>
+            <div className={cx(styles.metricSub, styles.ipCountry)}>
+              {ipInfo?.flag && (
+                <span role="img" aria-label={ipInfo.country}>
+                  {ipInfo.flag}
+                </span>
+              )}
+              {ipInfo?.country || (ipInfoUnavailable ? t("Unavailable") : "...")}
+            </div>
           </Card>
         );
       case "systemProxy":
